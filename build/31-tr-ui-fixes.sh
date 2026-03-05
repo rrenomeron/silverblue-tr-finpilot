@@ -3,7 +3,7 @@
 set -eou pipefail
 
 echo "Copy TR Basic Setup (PKI, Utils, Utility Scripts)"
-cp -r /ctx/system_files/tr-basic-setup/* /
+cp -r /ctx/system_files/tr-ui-fixes/* /
 
 echo "Adding UI Defaults"
 glib-compile-schemas /usr/share/glib-2.0/schemas

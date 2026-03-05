@@ -10,6 +10,7 @@ dnf5 -y install \
     gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-blur-my-shell \
     gnome-tweaks \
+    glow \
     gum \
     intel-one-mono-fonts \
     socat
