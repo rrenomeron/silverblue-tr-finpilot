@@ -3,12 +3,13 @@
 set -eou pipefail
 
 dnf5 -y install \
-    socat \
-    intel-one-mono-fonts \
     gnome-shell-extension-appindicator \
     gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-blur-my-shell \
-    gnome-tweaks
+    gnome-tweaks \
+    gum \
+    intel-one-mono-fonts \
+    socat
 
 # This adds the version of flatpak that can do preinstalls
 # Remove when Fedora 44 is a thing
