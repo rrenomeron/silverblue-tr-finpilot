@@ -117,15 +117,15 @@ jobs:
           tags: ${{ env.DEFAULT_TAG }}
           labels: ${{ steps.metadata.outputs.labels }}
           oci: false
-      - name: Rechunk Image
-        run: |
-          sudo podman run --rm --privileged \
-            -v /var/lib/containers:/var/lib/containers \
-            --entrypoint /usr/libexec/bootc-base-imagectl \
-            "${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" \
-            rechunk --max-layers 96 \
-            "${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" \
-            "${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+      # - name: Rechunk Image
+      #   run: |
+      #     sudo podman run --rm --privileged \
+      #       -v /var/lib/containers:/var/lib/containers \
+      #       --entrypoint /usr/libexec/bootc-base-imagectl \
+      #       "${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" \
+      #       rechunk --max-layers 96 \
+      #       "${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" \
+      #       "${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
 
       # Tag for registry
       - name: Tag for registry
