@@ -13,7 +13,7 @@ set -eoux pipefail
 # shellcheck source=/dev/null
 source /ctx/build/copr-helpers.sh
 
-echo "Copy Bluefin and Shared Config from Common"
+echo "Installing \"Image Opinion\", fixes, and extra packages from Bluefin"
 
 # Copy just files from @projectbluefin/common (includes 00-entry.just which imports 60-custom.just)
 mkdir -p /usr/share/ublue-os/just/
@@ -23,13 +23,11 @@ cp -r /ctx/oci/common/bluefin/usr/share/backgrounds/* /usr/share/backgrounds
 cp -r /ctx/oci/common/shared/* /
 shopt -u nullglob
 
-echo "Installing Gnome Extensions from Bluefin"
 /tmp/scripts/run_module.sh 'gnome-extensions' \
     '{"type":"gnome-extensions","install":["AppIndicator and KStatusNotifierItem Support","Dash to Dock","Blur my Shell","Logo Menu"]}'
 
 
-# This is not technically in the common OCI container (it's in bluefin itself),
-# But we'll include it here for now
+# Removes the Fedora flatpak remote with extreme predjudice
 cat > /usr/lib/systemd/system/flatpak-nuke-fedora.service << SERVICE_UNIT
 [Unit]
 Description=Remove Fedora flatpak repositories
@@ -67,28 +65,30 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flatpak-debuginfo flatpak-libs-debuginfo flatpak-session-helper-debuginfo
 
 # Packages for parity
+# Note: pcsc-lite needed for Alma
 
 dnf5 -y --setopt=install_weak_deps=False install \
-    desktop-backgrounds-waves \
+	clinfo \
+	ffmpegthumbnailer \
+	firewall-config \
+	fzf \
+	glow \
+	gnome-disk-utility \
+	gum\
+	lm_sensors \
+	nss-mdns \
+	openssh-askpass \
+	papers-thumbnailer  \
+	powertop \
 	rclone \
 	restic \
-	gnome-disk-utility \
-	wl-clipboard \
-	nss-mdns \
-	powertop \
-	fzf \
-	ffmpegthumbnailer \
-	papers-thumbnailer  \
-	openssh-askpass \
-	waypipe \
-	firewall-config \
 	setools-console \
-	lm_sensors \
-	clinfo \
-	glow \
-	gum\
+	waypipe \
+	wl-clipboard \
+    desktop-backgrounds-waves \
     socat \
-    xdg-terminal-exec
+    xdg-terminal-exec \
+	yq
 
 copr_install_isolated ublue-os/packages uupd
 
