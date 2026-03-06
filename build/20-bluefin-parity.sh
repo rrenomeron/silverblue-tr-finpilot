@@ -11,7 +11,7 @@ set -eoux pipefail
 
 # Source helper functions
 # shellcheck source=/dev/null
-# source /ctx/build/copr-helpers.sh
+source /ctx/build/copr-helpers.sh
 
 echo "Copy Bluefin and Shared Config from Common"
 
@@ -19,6 +19,7 @@ echo "Copy Bluefin and Shared Config from Common"
 mkdir -p /usr/share/ublue-os/just/
 shopt -s nullglob
 cp -r /ctx/oci/common/bluefin/usr/share/ublue-os/just/* /usr/share/ublue-os/just/
+cp -r /ctx/oci/common/bluefin/usr/share/backgrounds/* /usr/share/backgrounds
 cp -r /ctx/oci/common/shared/* /
 shopt -u nullglob
 
@@ -53,4 +54,49 @@ WantedBy=multi-user.target
 SERVICE_UNIT
 
 systemctl enable flatpak-nuke-fedora.service
+
+
+# This adds the version of flatpak that can do preinstalls
+# Remove when Fedora 44 is a thing
+# (Note that this follows the "safe Copr" pattern)
+dnf5 -y copr enable ublue-os/flatpak-test
+dnf5 -y copr disable ublue-os/flatpak-test
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak flatpak
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-libs flatpak-libs
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flatpak-debuginfo flatpak-libs-debuginfo flatpak-session-helper-debuginfo
+
+# Packages for parity
+
+dnf5 -y --setopt=install_weak_deps=False install \
+    desktop-backgrounds-waves \
+	rclone \
+	restic \
+	gnome-disk-utility \
+	wl-clipboard \
+	nss-mdns \
+	powertop \
+	fzf \
+	ffmpegthumbnailer \
+	papers-thumbnailer  \
+	openssh-askpass \
+	waypipe \
+	firewall-config \
+	setools-console \
+	lm_sensors \
+	clinfo \
+	glow \
+	gum\
+    socat \
+    xdg-terminal-exec
+
+copr_install_isolated ublue-os/packages uupd
+
+systemctl disable rpm-ostreed-automatic.timer
+systemctl disable flatpak-system-update.timer
+systemctl disable bootc-fetch-apply-updates.timer
+
+
+echo "Setting up non-Bluefin ublue-motd"
+cp -r /ctx/system_files/ublue_motd/* /
 
