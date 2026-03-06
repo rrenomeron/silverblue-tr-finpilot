@@ -117,6 +117,12 @@ jobs:
           tags: ${{ env.DEFAULT_TAG }}
           labels: ${{ steps.metadata.outputs.labels }}
           oci: false
+
+      - name: Check available images for rechunking
+        run: |
+          sudo podman image ls
+
+
       # - name: Rechunk Image
       #   run: |
       #     sudo podman run --rm --privileged \
