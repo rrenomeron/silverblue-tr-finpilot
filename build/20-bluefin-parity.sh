@@ -20,7 +20,10 @@ mkdir -p /usr/share/ublue-os/just/
 shopt -s nullglob
 cp -r /ctx/oci/common/bluefin/usr/share/ublue-os/just/* /usr/share/ublue-os/just/
 cp -r /ctx/oci/common/bluefin/usr/share/backgrounds/* /usr/share/backgrounds
-cp -r /ctx/oci/common/shared/* /
+#cp -r /ctx/oci/common/shared/* /
+rsync -av \
+	--exclude=etc/profile.d/ublue-fastfetch.sh \
+ /ctx/oci/common/shared/ /
 shopt -u nullglob
 
 /tmp/scripts/run_module.sh 'gnome-extensions' \
@@ -69,6 +72,7 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flat
 
 dnf5 -y --setopt=install_weak_deps=False install \
 	clinfo \
+	fastfetch \
 	ffmpegthumbnailer \
 	firewall-config \
 	fzf \
