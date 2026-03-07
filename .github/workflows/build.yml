@@ -119,14 +119,21 @@ jobs:
           oci: false
 
       - name: Rechunk Image
+      #   run: |
+      #     sudo podman run --rm --privileged \
+      #       -v /var/lib/containers:/var/lib/containers \
+      #       --entrypoint /usr/libexec/bootc-base-imagectl \
+      #       quay.io/fedora/fedora-bootc:43 \
+      #       rechunk --max-layers 96 \
+      #       "localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" \
+      #       "${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
         run: |
           sudo podman run --rm --privileged \
             -v /var/lib/containers:/var/lib/containers \
-            --entrypoint /usr/libexec/bootc-base-imagectl \
+            --entrypoint /usr/sbin/podman \
             quay.io/fedora/fedora-bootc:43 \
-            rechunk --max-layers 96 \
-            "localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" \
-            "localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+            image ls
+            
 
       # Tag for registry
       - name: Tag for registry
