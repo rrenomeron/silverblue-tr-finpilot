@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -eoux pipefail
+set -eou pipefail
 
 ###############################################################################
 # Main Build Script
