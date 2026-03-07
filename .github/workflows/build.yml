@@ -134,8 +134,8 @@ jobs:
             --entrypoint /usr/sbin/podman \
             quay.io/fedora/fedora-bootc:43 \
             image ls
-          echo "Normal podman images"
-          podman image ls
+          echo "HOME is $HOME"
+          echo "user is $(whoami)"
             
 
       # Tag for registry
