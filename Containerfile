@@ -48,7 +48,7 @@ COPY --from=ghcr.io/ublue-os/brew:latest@sha256:2eca44f5b4b58b8271a625d61c2c063b
 #--from=ghcr.io/ublue-os/bluefin-wallpapers-gnome:latest@sha256:4a9b0b771a7e927308cf1240ad1b512b61f2a91954be799bc6e1b5045fea2942
 #/ /oci/bluefin_wallpaper
 # This will be replace with an OCI container containing these files eventually
-COPY oci/tr-osforge /oci/tr-osforge
+COPY tr-osforge /oci/tr-osforge
 # Base Image - GNOME included
 FROM ghcr.io/ublue-os/silverblue-main:latest@sha256:6a701dd3b01edad50750be88397be79a050407824262012ddf2535db9c6ab3dc
 

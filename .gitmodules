@@ -1,0 +1,3 @@
+[submodule "tr-osforge"]
+	path = tr-osforge
+	url = https://github.com/rrenomeron/tr-osforge
