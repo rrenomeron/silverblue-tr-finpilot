@@ -78,6 +78,7 @@ dnf5 -y --setopt=install_weak_deps=False install \
 	fzf \
 	glow \
 	gnome-disk-utility \
+	gnome-tweaks \
 	gum\
 	lm_sensors \
 	nss-mdns \
@@ -116,3 +117,8 @@ This bootc based system is running
 ghcr.io/rrenomeron/${MOTD_IMAGE_NAME}:${MOTD_IMAGE_TAG}
 
 TEMPLATE.MD
+
+echo "Adding Cascadia Code"
+/tmp/scripts/run_module.sh 'fonts' \
+  '{ "type": "fonts", "fonts" : {"url-fonts": [ { "name": "cascadia-code", "url": "https://github.com/microsoft/cascadia-code/releases/download/v2407.24/CascadiaCode-2407.24.zip" } ] }}'
+
