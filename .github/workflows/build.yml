@@ -117,6 +117,9 @@ jobs:
           tags: ${{ env.DEFAULT_TAG }}
           labels: ${{ steps.metadata.outputs.labels }}
           oci: false
+          build-args: |
+            IMAGE_NAME=${{ env.IMAGE_NAME }}
+            TAG=${{ env.DEFAULT_TAG }}
 
       - name: Rechunk Image
         run: |
