@@ -3,7 +3,7 @@
 set -eou pipefail
 
 echo "Copy system files for TR UI Fixes"
-cp -r /ctx/system_files/tr-ui-fixes/* /
+cp -r /ctx/oci/tr-osforge/system_files/tr-ui-fixes/* /
 
 echo "Installing Gnome Extensions"
 /tmp/scripts/run_module.sh 'gnome-extensions' \

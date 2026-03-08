@@ -4,8 +4,10 @@ set -eou pipefail
 
 echo "Building ${IMAGE_NAME}:${TAG}"
 
-for scriptname in /ctx/build/[0-9][0-9]-*.sh; do
-    echo "::group:: Running $(basename $scriptname)"
+/ctx/build/custom.sh
+
+for scriptname in /ctx/oci/tr-osforge/build/*.sh; do
+    echo "========================================* $scriptname start *========================================"
     $scriptname
-    echo "::endgroup::"
+    echo "========================================* $scriptname end *========================================"
 done
