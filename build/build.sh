@@ -18,9 +18,9 @@ OSFORGE_SCRIPTS_TO_USE=(
 
 /ctx/build/custom.sh
 
-for scriptname in ${OSFORGE_SCRIPTS_TO_USE[@]}; do
+for scriptname in "${OSFORGE_SCRIPTS_TO_USE[@]}"; do
     echo "========================================* $scriptname start *========================================"
-    /ctx/oci/tr-osforge/build/$scriptname.sh
+    /ctx/oci/tr-osforge/build/"$scriptname".sh
     echo "========================================* $scriptname finish *========================================"
 done
 
