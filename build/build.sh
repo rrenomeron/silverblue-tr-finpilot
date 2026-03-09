@@ -4,8 +4,26 @@ set -eou pipefail
 
 echo "Building ${IMAGE_NAME}:${TAG}"
 
-for scriptname in /ctx/build/[0-9][0-9]-*.sh; do
-    echo "::group:: Running $(basename $scriptname)"
-    $scriptname
-    echo "::endgroup::"
+OSFORGE_SCRIPTS_TO_USE=(
+    "flatpak-substiution-removals"
+    "bluefin-parity"
+    "tr-pki"
+    "tr-ui"
+    "google-chrome"
+    "vscode"
+    "cockpit"
+    "virtualization"
+    "docker"
+)
+
+/ctx/build/custom.sh
+
+for scriptname in "${OSFORGE_SCRIPTS_TO_USE[@]}"; do
+    echo "========================================* $scriptname start *========================================"
+    /ctx/oci/tr-osforge/build/"$scriptname".sh
+    echo "========================================* $scriptname finish *========================================"
 done
+
+echo "========================================* $IMAGE_NAME overrides start *========================================"
+/ctx/build/image-overrides.sh
+echo "========================================* $IMAGE_NAME overrides finish *========================================"

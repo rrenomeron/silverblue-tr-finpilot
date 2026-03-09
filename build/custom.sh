@@ -19,14 +19,19 @@ echo "Copy Custom Flatpak/Brew/ujust Files"
 
 # Copy Flatpak preinstall files
 mkdir -p /etc/flatpak/preinstall.d/
+ls /ctx/oci/tr-osforge/custom/flatpaks
+cp /ctx/oci/tr-osforge/custom/flatpaks/*.preinstall /etc/flatpak/preinstall.d/
 cp /ctx/custom/flatpaks/*.preinstall /etc/flatpak/preinstall.d/
+
 
 # Copy Brewfiles to standard location
 mkdir -p /usr/share/ublue-os/homebrew/
+#cp /ctx/oci/tr-osforge/custom/brew/*.Brewfile /usr/share/ublue-os/homebrew
 cp /ctx/custom/brew/*.Brewfile /usr/share/ublue-os/homebrew/
 
 # Consolidate Just Files
-find /ctx/custom/ujust -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
+#find /ctx/oci/tr-osforge/custom/ujust -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom-osforge.just
+find /ctx/custom/ujust -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/61-custom.just
 # Restore default glob behavior
 shopt -u nullglob
 echo "::endgroup::"
