@@ -1,14 +1,18 @@
 # Build Scripts
 
-This directory contains build scripts that run during image creation. Scripts are executed in numerical order.
+This directory contains the scripts that run the majority of the image build process.
 
 ## How It Works
 
-Scripts are named with a number prefix (e.g., `10-build.sh`, `20-onepassword.sh`) and run in ascending order during the container build process.
+The build is controlled by the ``build.sh``.  You'll need to edit it to include the reusable scripts
+from ``tr-osforge`` you'll want to use by adding the names of the scripts (sans the ``.sh`` suffix) to the
+``OSFORGE_SCRIPTS_TO_USE`` array variable in the script.
 
 ## Included Scripts
 
-- **`10-build.sh`** - Main build script for base system modifications, package installation, and service configuration
+- ``build.sh`` - Controller script for the build process.
+- ``custom.sh`` - Sets up the Flatpaks, Brewfiles, and ``ujust`` scripts that are included on your image.
+- ``image-overrides.sh`` - Anything that is specific to this particular image that can't be shared in the ``tr-osforge`` repository.
 
 ## Example Scripts
 
