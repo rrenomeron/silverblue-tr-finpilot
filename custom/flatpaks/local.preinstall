@@ -4,3 +4,4 @@
 # See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
 
 [Flatpak Preinstall app.comaps.comaps]
+Branch=stable
