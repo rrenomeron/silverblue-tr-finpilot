@@ -15,6 +15,7 @@ keep a consistent baseline of applications between them.
 
 These are the important features of this image:
 
+- "Gated" Kernel from the [Fedora CoreOS stable stream](https://www.fedoraproject.org/coreos/download/?stream=stable&arch=aarch64)
 - Google Chrome RPM installed and set as default browser
 - Clocks set to AM/PM view with Weekday Display
 - Curated selection of Flatpak apps installed automatically
