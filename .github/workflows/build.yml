@@ -180,7 +180,7 @@ jobs:
         run: |
           OUTPUT_PATH="$(mktemp -d)/sbom.json"
           export SYFT_PARALLELISM=$(($(nproc)*2))
-          $SYFT_CMD ${IMAGE}:${DEFAULT_TAG} -o spdx-json=${OUTPUT_PATH}
+          $SYFT_CMD localhost/${IMAGE}:${DEFAULT_TAG} -o spdx-json=${OUTPUT_PATH}
           echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
 
       # These `if` statements are so that pull requests for your custom images do not make it publish any packages under your name without you knowing
