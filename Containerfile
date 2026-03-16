@@ -48,8 +48,11 @@ COPY --from=ghcr.io/ublue-os/akmods:coreos-stable-43@sha256:4ec52946a8012117c91f
 # Copy from submodule.  We put it under /oci for convenience
 COPY tr-osforge/reusable_scripting /oci/tr-osforge
 
-# Base Image - GNOME included
-FROM ghcr.io/ublue-os/silverblue-main:43@sha256:8f33eb636fbff64bdf129e6ac2c6a143dd6d802bb7799fea40f3ac41085cbcd9
+# Renovatebot will happily update the Fedora version if you specify a number, which we don't want, since
+# the ublue main image will produce beta images before the actual release.
+# 
+# The convention for ublue-main is "latest" for current Fedora, and "gts" for Fedora-1
+FROM ghcr.io/ublue-os/silverblue-main:latest
 
 ARG IMAGE_NAME
 ARG TAG
