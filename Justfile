@@ -115,7 +115,7 @@ rechunk $target_image=image_name $tag=default_tag:
     sudo podman run --rm --privileged \
         -v /var/lib/containers:/var/lib/containers \
         --entrypoint=/usr/libexec/bootc-base-imagectl quay.io/fedora/fedora-bootc:43  \
-        rechunk --max-layers 96 \
+        rechunk --max-layers 128 \
         localhost/${target_image}:${tag} \
         localhost/${target_image}:${tag}
         
