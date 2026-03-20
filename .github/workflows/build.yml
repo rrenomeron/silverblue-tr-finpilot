@@ -154,6 +154,7 @@ jobs:
           echo "Saving image to rootful storage ..."
           podman save -o image.tar localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
           sudo podman image load < image.tar
+          rm image.tar
           echo "... done."
           sudo podman run --rm --privileged \
             -v /var/lib/containers:/var/lib/containers \
@@ -162,6 +163,12 @@ jobs:
             rechunk --max-layers 128 \
             localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" \
             localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+          echo "Saving image to regular storage"  
+          sudo podman save -o image.tar localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+          podman image load < image.
+          sudo rm image.tar
+          echo "done"
+
       # Tag for registry
       - name: Tag for registry
         run: |
