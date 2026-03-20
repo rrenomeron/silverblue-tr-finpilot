@@ -127,27 +127,27 @@ jobs:
           sep-tags: " "
           sep-annotations: " "
 
-      # - name: Build Image
-      #   id: build_image
-      #   uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
-      #   with:
-      #     containerfiles: |
-      #       ./Containerfile
-      #     # Postfix image name with -custom to make it a little more descriptive
-      #     # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
-      #     image: ${{ env.IMAGE_NAME }}
-      #     tags: ${{ env.DEFAULT_TAG }}
-      #     labels: ${{ steps.metadata.outputs.labels }}
-      #     oci: false
-      #     build-args: |
-      #       IMAGE_NAME=${{ env.IMAGE_NAME }}
-      #       TAG=${{ env.DEFAULT_TAG }}
-      - name: setup Just
-        uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
-
       - name: Build Image
-        run: \
-          just build ${{ env.IMAGE_NAME }} ${{ env.DEFAULT_TAG }}
+        id: build_image
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
+        with:
+          containerfiles: |
+            ./Containerfile
+          # Postfix image name with -custom to make it a little more descriptive
+          # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.DEFAULT_TAG }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          oci: false
+          build-args: |
+            IMAGE_NAME=${{ env.IMAGE_NAME }}
+            TAG=${{ env.DEFAULT_TAG }}
+      # - name: setup Just
+      #   uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
+
+      # - name: Build Image
+      #   run: \
+      #     just build ${{ env.IMAGE_NAME }} ${{ env.DEFAULT_TAG }}
 
       - name: Rechunk Image
         run: |
