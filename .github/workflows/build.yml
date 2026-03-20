@@ -127,28 +127,31 @@ jobs:
           sep-tags: " "
           sep-annotations: " "
 
+      # - name: Build Image
+      #   id: build_image
+      #   uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
+      #   with:
+      #     containerfiles: |
+      #       ./Containerfile
+      #     # Postfix image name with -custom to make it a little more descriptive
+      #     # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
+      #     image: ${{ env.IMAGE_NAME }}
+      #     tags: ${{ env.DEFAULT_TAG }}
+      #     labels: ${{ steps.metadata.outputs.labels }}
+      #     oci: false
+      #     build-args: |
+      #       IMAGE_NAME=${{ env.IMAGE_NAME }}
+      #       TAG=${{ env.DEFAULT_TAG }}
       - name: Build Image
-        id: build_image
-        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
-        with:
-          containerfiles: |
-            ./Containerfile
-          # Postfix image name with -custom to make it a little more descriptive
-          # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
-          image: ${{ env.IMAGE_NAME }}
-          tags: ${{ env.DEFAULT_TAG }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          oci: false
-          build-args: |
-            IMAGE_NAME=${{ env.IMAGE_NAME }}
-            TAG=${{ env.DEFAULT_TAG }}
+        run: \
+          sudo just build ${{ env.IMAGE_NAME }} ${{ env.IMAGE_TAG }}
 
       - name: Rechunk Image
         run: |
-          echo "Saving image to rootful storage ..."
-          podman save -o image.tar localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
-          sudo podman image load < image.tar
-          echo "... done."
+          #echo "Saving image to rootful storage ..."
+          #podman save -o image.tar localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+          #sudo podman image load < image.tar
+          #echo "... done."
           sudo podman run --rm --privileged \
             -v /var/lib/containers:/var/lib/containers \
             --entrypoint /usr/libexec/bootc-base-imagectl \
