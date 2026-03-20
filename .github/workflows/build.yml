@@ -142,6 +142,9 @@ jobs:
       #     build-args: |
       #       IMAGE_NAME=${{ env.IMAGE_NAME }}
       #       TAG=${{ env.DEFAULT_TAG }}
+      - name: setup Just
+        uses: extractions/setup-just@vf8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
+
       - name: Build Image
         run: \
           just build ${{ env.IMAGE_NAME }} ${{ env.DEFAULT_TAG }}
