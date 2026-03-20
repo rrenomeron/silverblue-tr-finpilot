@@ -165,7 +165,7 @@ jobs:
             localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
           echo "Saving image to regular storage"  
           sudo podman save -o image.tar localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
-          podman image load < image.
+          podman image load < image.tar
           sudo rm image.tar
           echo "done"
 
