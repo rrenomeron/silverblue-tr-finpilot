@@ -151,14 +151,13 @@ jobs:
 
       - name: Rechunk Image
         run: |
-          echo "User container storage is $HOME/.local/share/containers"
-          #echo "Saving image to rootful storage ..."
-          #podman save -o image.tar localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
-          #sudo podman image load < image.tar
-          #rm image.tar
-          #echo "... done."
+          echo "Saving image to rootful storage ..."
+          podman save -o image.tar localhost/"${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+          sudo podman image load < image.tar
+          rm image.tar
+          echo "... done."
           sudo podman run --rm --privileged \
-            -v $HOME/.local/share/containers:/var/lib/containers \
+            -v /var/lib/containers:/var/lib/containers \
             --entrypoint /usr/libexec/bootc-base-imagectl \
             quay.io/fedora/fedora-bootc:43 \
             rechunk --max-layers 128 \
