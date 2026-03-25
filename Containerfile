@@ -3,8 +3,7 @@
 ###############################################################################
 # Name: tr-desktop-fedora
 #
-# IMPORTANT: Change "tr-desktop-fedora" above to your desired project name.
-# This name should be used consistently throughout the repository in:
+# IMPORTANT: This name should be used consistently throughout the repository in:
 #   - Justfile: export image_name := env("IMAGE_NAME", "your-name-here")
 #   - README.md: # your-name-here (title)
 #   - artifacthub-repo.yml: repositoryID: your-name-here
@@ -24,12 +23,16 @@
 # 1. Context Stage (ctx) - Combines resources from:
 #    - Local build scripts and custom files
 #    - @projectbluefin/common - Desktop configuration shared with Aurora 
+#    - @ublue-os/akmods - Kernel and additional modules
 #    - @ublue-os/brew - Homebrew integration
+#    - @rrenomeron/tr-osforge - Shared build scripting
 #
-# 2. Base Image Options:
+# 2. Base Image:
 #    - `ghcr.io/ublue-os/silverblue-main:latest` (Fedora and GNOME)
-#    - `ghcr.io/ublue-os/base-main:latest` (Fedora and no desktop 
-#    - `quay.io/centos-bootc/centos-bootc:stream10 (CentOS-based)` 
+# 
+# 3. Customizations:
+#    - see build/build.sh and custom/*
+#     
 #
 # See: https://docs.projectbluefin.io/contributing/ for architecture diagram
 ###############################################################################
@@ -48,6 +51,7 @@ COPY --from=ghcr.io/ublue-os/akmods:coreos-stable-43@sha256:73a7d99455f34eac2997
 # Copy from submodule.  We put it under /oci for convenience
 COPY tr-osforge/reusable_scripting /oci/tr-osforge
 
+# Base Image stage
 # Renovatebot will happily update the Fedora version if you specify a number, which we don't want, since
 # the ublue main image will produce beta images before the actual release.
 # 
@@ -56,24 +60,8 @@ FROM ghcr.io/ublue-os/silverblue-main:latest@sha256:82b6c134ad1c25f8108151cf7fe3
 
 ARG IMAGE_NAME
 ARG TAG
-## Alternative base images, no desktop included (uncomment to use):
-# FROM ghcr.io/ublue-os/base-main:latest    
-# FROM quay.io/centos-bootc/centos-bootc:stream10
 
-## Alternative GNOME OS base image (uncomment to use):
-# FROM quay.io/gnome_infrastructure/gnome-build-meta:gnomeos-nightly
-
-### /opt
-## Some bootable images, like Fedora, have /opt symlinked to /var/opt, in order to
-## make it mutable/writable for users. However, some packages write files to this directory,
-## thus its contents might be wiped out when bootc deploys an image, making it troublesome for
-## some packages. Eg, google-chrome, docker-desktop.
-##
-## Uncomment the following line if one desires to make /opt immutable and be able to be used
-## by the package manager.
-
-# RUN rm /opt && mkdir /opt
-
+# FEDORA CoreOS KERNEL SWAP
 # Need to do this in a separate RUN instruction because
 # Kernel installation needs /tmp to be on the image,
 # Not a bind mount elsewhere
@@ -81,13 +69,11 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
 /ctx/oci/tr-osforge/build/akmods-kernel.sh
-### MODIFICATIONS
 
-# Note: Building the image this way results in "one big layer", even with rechunking,
-# which is very problematic.  So for now we'll run each script in its own RUN
-# instruction, which the rechunker seems to like better.
-#
-# Revisit this when we find a better solution to rechunking
+### OTHER MODIFICATIONS
+# 
+# Most of the build is delegated to the build scripts
+# See build/build.sh for more details.
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
@@ -96,86 +82,6 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=bind,from=ghcr.io/blue-build/modules:latest,src=/modules,dst=/tmp/modules,rw \
     --mount=type=bind,from=ghcr.io/blue-build/cli/build-scripts:latest,src=/scripts/,dst=/tmp/scripts/ \
     /ctx/build/build.sh
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/oci/tr-osforge/build/flatpak-substiution-removals.sh
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \  
-#     --mount=type=bind,from=ghcr.io/blue-build/modules:latest,src=/modules,dst=/tmp/modules,rw \
-#     --mount=type=bind,from=ghcr.io/blue-build/cli/build-scripts:latest,src=/scripts/,dst=/tmp/scripts/ \
-#     /ctx/oci/tr-osforge/build/bluefin-parity.sh
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/oci/tr-osforge/build/tr-pki.sh
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \  
-#     --mount=type=bind,from=ghcr.io/blue-build/modules:latest,src=/modules,dst=/tmp/modules,rw \
-#     --mount=type=bind,from=ghcr.io/blue-build/cli/build-scripts:latest,src=/scripts/,dst=/tmp/scripts/ \
-#     /ctx/oci/tr-osforge/build/tr-ui.sh
-
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/oci/tr-osforge/build/brew.sh 
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/oci/tr-osforge/build/google-chrome.sh 
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/oci/tr-osforge/build/vscode.sh 
-    
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/oci/tr-osforge/build/cockpit.sh
-
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/oci/tr-osforge/build/virtualization.sh 
-
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/oci/tr-osforge/build/docker.sh
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/build/image-overrides.sh
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/build/custom.sh    
     
 ### LINTING
 ## Verify final image and contents are correct.
